@@ -1,4 +1,4 @@
-WARNING: This addon is very old. Use at your own risk.
+Note: This addon is very old.
 
 Screengrab
 ==========

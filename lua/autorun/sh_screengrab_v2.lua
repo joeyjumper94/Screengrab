@@ -1,3 +1,11 @@
+local meta = FindMetaTable( "Player" )
+function meta:CanScreengrab()--return true if they are allowed to screengrab,
+	if self:IsAdmin() then
+		return true
+	end
+	return false
+end
+
 if SERVER then
 	local sg = {}
 	local NWStrings = {
@@ -26,12 +34,6 @@ if SERVER then
 	sg.yellow = "Color( 255, 255, 0 )"
 	sg.blue = "Color( 0, 200, 255 )"
 	
-	local meta = FindMetaTable( "Player" )
-	
-	function meta:CanScreengrab()
-		return self:IsAdmin()
-	end
-	
 	function meta:rtxappend( col, str )
 		self:SendLua( [[rtxappend(]] .. col .. [[,"]] .. str .. [[")]] )
 	end	
@@ -58,7 +60,7 @@ if SERVER then
 			net.Start( "StartScreengrab" )
 				net.WriteUInt( qual, 32 )
 				net.WriteEntity( ply )
-			net.Send( ent )		
+			net.Send( ent )
 			ent.sg = ply
 			ply.sg = ent
 		else
@@ -493,11 +495,15 @@ if CLIENT then
 			progress.screenshot = nil
 			progress.num = 0
 			timer.Simple( 0.1, function()
-				net.Start( "ScreengrabRequest" )
-					net.WriteEntity( plys.curChoice )
-					net.WriteUInt( q:GetValue(), 32 )
-				net.SendToServer()
-				LocalPlayer().InProgress = true
+				if LocalPlayer():CanScreengrab() then
+					net.Start( "ScreengrabRequest" )
+						net.WriteEntity( plys.curChoice )
+						net.WriteUInt( q:GetValue(), 32 )
+					net.SendToServer()
+					LocalPlayer().InProgress = true
+				else
+					rtxappend(Color( 255, 0, 0 ),"Error: Insufficient permissions")
+				end
 			end )
 		end
 		
