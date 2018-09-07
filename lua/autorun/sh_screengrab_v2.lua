@@ -204,7 +204,7 @@ if CLIENT then
 	local hook_GetTable=hook.GetTable()
 	local hook_Remove=hook.Remove
 	local math_random=math.random
-	local net_SendToServer
+	local net_SendToServer=net.SendToServer()
 	local net_Start=net.Start
 	local net_WriteData=net.WriteData
 	local net_WriteEntity=net.WriteEntity
